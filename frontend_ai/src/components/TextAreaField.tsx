@@ -25,11 +25,14 @@ export const TextAreaField: React.FC<TextAreaFieldProps> = ({
   placeholder,
   disabled = false,
   rows = 3,
-  className = ''
+  className = '',
 }) => {
   return (
     <div className={`space-y-1 ${className}`}>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+      <label
+        htmlFor={id}
+        className="block text-lg font-medium mb-2 text-gray-900"
+      >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -41,7 +44,7 @@ export const TextAreaField: React.FC<TextAreaFieldProps> = ({
         placeholder={placeholder}
         disabled={disabled}
         rows={rows}
-        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed resize-vertical ${
+        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed resize-vertical text-gray-900 ${
           error ? 'border-red-500' : ''
         }`}
         aria-invalid={error ? 'true' : 'false'}
