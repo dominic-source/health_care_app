@@ -114,7 +114,7 @@ export const usePatientRegistration = () => {
   };
 
   const nextStep = () => {
-    const validation = validatePatientRegistration(formData);
+    const validation = validatePatientRegistration(formData, currentStep);
     if (!validation.isValid) {
       setErrors(validation.errors);
       return;
@@ -122,6 +122,7 @@ export const usePatientRegistration = () => {
     setCurrentStep(prev => Math.min(prev + 1, totalSteps));
   };
 
+  // correct the validation logic to prevent going back if there are errors
   const prevStep = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
@@ -130,7 +131,7 @@ export const usePatientRegistration = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const validation = validatePatientRegistration(formData);
+    const validation = validatePatientRegistration(formData, currentStep);
     if (!validation.isValid) {
       setErrors(validation.errors);
       setIsSubmitting(false);
