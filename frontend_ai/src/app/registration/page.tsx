@@ -1,19 +1,20 @@
 'use client';
 
-import React from 'react';
+import {
+  genderOptions,
+  insuranceRelationshipOptions,
+  relationshipOptions,
+  stateOptions,
+} from '@/appConstants';
+import { CheckboxField } from '@/components/CheckboxField';
 import { InputField } from '@/components/InputField';
 import { SelectField } from '@/components/SelectField';
 import { TextAreaField } from '@/components/TextAreaField';
-import { CheckboxField } from '@/components/CheckboxField';
 import { usePatientRegistration } from '@/hooks/usePatientRegistration';
-import {
-  genderOptions,
-  relationshipOptions,
-  insuranceRelationshipOptions,
-  stateOptions
-} from '@/appConstants';
 
 export default function PatientRegistrationPage() {
+  const inputCSS =
+    'flex-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900';
   const {
     // State
     formData,
@@ -25,13 +26,13 @@ export default function PatientRegistrationPage() {
     conditionInput,
     surgeryInput,
     totalSteps,
-    
+
     // State Setters
     setMedicationInput,
     setAllergyInput,
     setConditionInput,
     setSurgeryInput,
-    
+
     // Handlers
     handleInputChange,
     handlePhoneChange,
@@ -39,7 +40,7 @@ export default function PatientRegistrationPage() {
     removeMedicalItem,
     nextStep,
     prevStep,
-    handleSubmit
+    handleSubmit,
   } = usePatientRegistration();
 
   const renderStep = () => {
@@ -47,7 +48,9 @@ export default function PatientRegistrationPage() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Personal Information
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 label="First Name"
@@ -109,7 +112,9 @@ export default function PatientRegistrationPage() {
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Contact Information
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 label="Email Address"
@@ -145,7 +150,9 @@ export default function PatientRegistrationPage() {
             </div>
 
             <div className="border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Address</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Address
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField
                   label="Street Address"
@@ -203,7 +210,9 @@ export default function PatientRegistrationPage() {
       case 3:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Emergency Contact</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Emergency Contact
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 label="Full Name"
@@ -250,9 +259,12 @@ export default function PatientRegistrationPage() {
       case 4:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Insurance Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Insurance Information
+            </h2>
             <p className="text-sm text-gray-600 mb-4">
-              Please provide your insurance information. This section is optional but recommended for faster processing.
+              Please provide your insurance information. This section is
+              optional but recommended for faster processing.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
@@ -300,19 +312,26 @@ export default function PatientRegistrationPage() {
       case 5:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Medical History</h2>
-            
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Medical History
+            </h2>
+
             {/* Allergies */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Allergies</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Allergies
+              </h3>
               <div className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={allergyInput}
-                  onChange={(e) => setAllergyInput(e.target.value)}
+                  onChange={e => setAllergyInput(e.target.value)}
                   placeholder="Enter allergy"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addMedicalItem('allergies'))}
+                  className={inputCSS}
+                  onKeyPress={e =>
+                    e.key === 'Enter' &&
+                    (e.preventDefault(), addMedicalItem('allergies'))
+                  }
                 />
                 <button
                   type="button"
@@ -343,15 +362,20 @@ export default function PatientRegistrationPage() {
 
             {/* Current Medications */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Current Medications</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Current Medications
+              </h3>
               <div className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={medicationInput}
-                  onChange={(e) => setMedicationInput(e.target.value)}
+                  onChange={e => setMedicationInput(e.target.value)}
                   placeholder="Enter medication"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addMedicalItem('medications'))}
+                  className={inputCSS}
+                  onKeyPress={e =>
+                    e.key === 'Enter' &&
+                    (e.preventDefault(), addMedicalItem('medications'))
+                  }
                 />
                 <button
                   type="button"
@@ -362,35 +386,44 @@ export default function PatientRegistrationPage() {
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {formData.medicalHistory.currentMedications.map((medication, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
-                  >
-                    {medication}
-                    <button
-                      type="button"
-                      onClick={() => removeMedicalItem('currentMedications', index)}
-                      className="ml-1 text-blue-600 hover:text-blue-800"
+                {formData.medicalHistory.currentMedications.map(
+                  (medication, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                      {medication}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeMedicalItem('currentMedications', index)
+                        }
+                        className="ml-1 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )
+                )}
               </div>
             </div>
 
             {/* Chronic Conditions */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Chronic Conditions</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Chronic Conditions
+              </h3>
               <div className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={conditionInput}
-                  onChange={(e) => setConditionInput(e.target.value)}
+                  onChange={e => setConditionInput(e.target.value)}
                   placeholder="Enter chronic condition"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addMedicalItem('conditions'))}
+                  className={inputCSS}
+                  onKeyPress={e =>
+                    e.key === 'Enter' &&
+                    (e.preventDefault(), addMedicalItem('conditions'))
+                  }
                 />
                 <button
                   type="button"
@@ -401,35 +434,44 @@ export default function PatientRegistrationPage() {
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {formData.medicalHistory.chronicConditions.map((condition, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full"
-                  >
-                    {condition}
-                    <button
-                      type="button"
-                      onClick={() => removeMedicalItem('chronicConditions', index)}
-                      className="ml-1 text-yellow-600 hover:text-yellow-800"
+                {formData.medicalHistory.chronicConditions.map(
+                  (condition, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                      {condition}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeMedicalItem('chronicConditions', index)
+                        }
+                        className="ml-1 text-yellow-600 hover:text-yellow-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )
+                )}
               </div>
             </div>
 
             {/* Previous Surgeries */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Previous Surgeries</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Previous Surgeries
+              </h3>
               <div className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={surgeryInput}
-                  onChange={(e) => setSurgeryInput(e.target.value)}
+                  onChange={e => setSurgeryInput(e.target.value)}
                   placeholder="Enter surgery"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addMedicalItem('surgeries'))}
+                  className={inputCSS}
+                  onKeyPress={e =>
+                    e.key === 'Enter' &&
+                    (e.preventDefault(), addMedicalItem('surgeries'))
+                  }
                 />
                 <button
                   type="button"
@@ -440,21 +482,25 @@ export default function PatientRegistrationPage() {
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {formData.medicalHistory.previousSurgeries.map((surgery, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-800 text-sm rounded-full"
-                  >
-                    {surgery}
-                    <button
-                      type="button"
-                      onClick={() => removeMedicalItem('previousSurgeries', index)}
-                      className="ml-1 text-purple-600 hover:text-purple-800"
+                {formData.medicalHistory.previousSurgeries.map(
+                  (surgery, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-800 text-sm rounded-full"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                      {surgery}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeMedicalItem('previousSurgeries', index)
+                        }
+                        className="ml-1 text-purple-600 hover:text-purple-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )
+                )}
               </div>
             </div>
 
@@ -473,8 +519,10 @@ export default function PatientRegistrationPage() {
       case 6:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Preferences & Consent</h2>
-            
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Preferences & Consent
+            </h2>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 label="Preferred Pharmacy"
@@ -494,13 +542,15 @@ export default function PatientRegistrationPage() {
                   { value: 'English', label: 'English' },
                   { value: 'Spanish', label: 'Spanish' },
                   { value: 'French', label: 'French' },
-                  { value: 'Other', label: 'Other' }
+                  { value: 'Other', label: 'Other' },
                 ]}
               />
             </div>
 
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Communication Preferences</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Communication Preferences
+              </h3>
               <div className="space-y-2">
                 <CheckboxField
                   label="Email notifications"
@@ -527,7 +577,9 @@ export default function PatientRegistrationPage() {
             </div>
 
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Required Agreements</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Required Agreements
+              </h3>
               <div className="space-y-3">
                 <CheckboxField
                   label="I acknowledge and agree to the HIPAA Privacy Notice"
@@ -571,7 +623,9 @@ export default function PatientRegistrationPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Patient Registration</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Patient Registration
+          </h1>
           <p className="mt-2 text-lg text-gray-600">
             Please complete all sections to register as a new patient
           </p>
@@ -580,7 +634,7 @@ export default function PatientRegistrationPage() {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
+            {Array.from({ length: totalSteps }, (_, i) => i + 1).map(step => (
               <div key={step} className="flex items-center">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
@@ -658,7 +712,8 @@ export default function PatientRegistrationPage() {
         {/* Security Notice */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
-            🔒 Your information is secure and protected by industry-standard encryption
+            🔒 Your information is secure and protected by industry-standard
+            encryption
           </p>
         </div>
       </div>
