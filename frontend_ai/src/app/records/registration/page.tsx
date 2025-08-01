@@ -10,11 +10,14 @@ import {
   relationshipOptions,
   stateOptions,
 } from '@/constant';
+import { useColors } from '@/hooks/useColors';
 import { usePatientRegistration } from '@/hooks/usePatientRegistration';
 
 export default function RegistrationPage() {
-  const inputCSS =
-    'flex-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900';
+  const { colors, getStatusColor } = useColors();
+
+  const inputCSS = `flex-1 w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed`;
+
   const {
     // State
     formData,
@@ -623,52 +626,64 @@ export default function RegistrationPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ backgroundColor: colors.background }}>
       {/* Header */}
       <div className="md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          <h2
+            className="text-2xl font-bold leading-7 sm:text-3xl sm:truncate"
+            style={{ color: colors.text }}
+          >
             Patient Registration
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm" style={{ color: colors.textSecondary }}>
             Complete all sections to register a new patient
           </p>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div
+        className="rounded-lg shadow p-6"
+        style={{ backgroundColor: colors.surface }}
+      >
         <div className="flex items-center justify-between mb-4">
           {Array.from({ length: totalSteps }, (_, i) => i + 1).map(step => (
             <div key={step} className="flex items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step <= currentStep
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-600'
-                }`}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
+                style={{
+                  backgroundColor:
+                    step <= currentStep ? colors.primary : colors.border,
+                  color: step <= currentStep ? 'white' : colors.textMuted,
+                }}
               >
                 {step}
               </div>
               {step < totalSteps && (
                 <div
-                  className={`flex-1 h-1 mx-2 ${
-                    step < currentStep ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
+                  className="flex-1 h-1 mx-2"
+                  style={{
+                    backgroundColor:
+                      step < currentStep ? colors.primary : colors.border,
+                  }}
                 />
               )}
             </div>
           ))}
         </div>
         <div className="text-center">
-          <span className="text-sm text-gray-600">
+          <span className="text-sm" style={{ color: colors.textSecondary }}>
             Step {currentStep} of {totalSteps}
           </span>
         </div>
       </div>
 
       {/* Form */}
-      <div className="bg-white shadow rounded-lg">
+      <div
+        className="shadow rounded-lg"
+        style={{ backgroundColor: colors.surface }}
+      >
         <div className="px-6 py-8">
           <form onSubmit={handleSubmit}>
             {renderStep()}
@@ -679,11 +694,13 @@ export default function RegistrationPage() {
                 type="button"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className={`px-6 py-2 rounded-md text-sm font-medium ${
-                  currentStep === 1
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
+                className="px-6 py-2 rounded-md text-sm font-medium transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor:
+                    currentStep === 1 ? colors.cardBg : colors.background,
+                  color: currentStep === 1 ? colors.textMuted : colors.text,
+                  border: `1px solid ${colors.border}`,
+                }}
               >
                 Previous
               </button>
@@ -692,7 +709,8 @@ export default function RegistrationPage() {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="px-6 py-2 text-white rounded-md text-sm font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-opacity"
+                  style={{ backgroundColor: colors.primary }}
                 >
                   Next
                 </button>
@@ -700,11 +718,13 @@ export default function RegistrationPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`px-6 py-2 rounded-md text-sm font-medium ${
-                    isSubmitting
-                      ? 'bg-gray-400 text-white cursor-not-allowed'
-                      : 'bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
-                  }`}
+                  className="px-6 py-2 rounded-md text-sm font-medium text-white transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: isSubmitting
+                      ? colors.textMuted
+                      : getStatusColor('success'),
+                    opacity: isSubmitting ? 0.6 : 1,
+                  }}
                 >
                   {isSubmitting ? 'Submitting...' : 'Complete Registration'}
                 </button>
@@ -716,7 +736,7 @@ export default function RegistrationPage() {
 
       {/* Security Notice */}
       <div className="text-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm" style={{ color: colors.textSecondary }}>
           🔒 Your information is secure and protected by industry-standard
           encryption
         </p>
