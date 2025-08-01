@@ -1,26 +1,92 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+/* Dynamic Theme CSS Custom Properties */
+/* These will be set dynamically by the ThemeProvider */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Font families */
+  --font-family-sans: var(--font-geist-sans), ui-sans-serif, system-ui,
+    sans-serif;
+  --font-family-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular,
+    monospace;
+
+  /* Color palette - defaults to clinical theme */
+  --color-primary: #2563eb;
+  --color-secondary: #64748b;
+  --color-tertiary: #0ea5e9;
+  --color-accent: #7c3aed;
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-info: #0284c7;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-cardBg: #f1f5f9;
+  --color-text: #1e293b;
+  --color-textSecondary: #475569;
+  --color-textMuted: #64748b;
+  --color-border: #e2e8f0;
+  --color-borderLight: #f1f5f9;
+
+  /* Legacy compatibility */
+  --background: var(--color-background);
+  --foreground: var(--color-text);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base styles with performance optimizations */
+html {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-family-sans);
+  font-feature-settings: 'rlig' 1, 'calt' 1;
+  line-height: 1.5;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Loading animations */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes loadingProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.loading-pulse {
+  animation: pulse 1.5s infinite;
+}
+
+.loading-progress {
+  animation: loadingProgress 2s linear infinite;
+}
+
+/* Tab transition states */
+.tab-loading {
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.tab-content {
+  transition: opacity 0.2s ease;
+}
+
+.tab-content.loading {
+  opacity: 0.4;
 }
