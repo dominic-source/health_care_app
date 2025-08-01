@@ -1,3 +1,4 @@
+import { useColors } from '@/hooks/useColors';
 import React from 'react';
 
 interface InputFieldProps {
@@ -27,11 +28,21 @@ export const InputField: React.FC<InputFieldProps> = ({
   disabled = false,
   className = '',
 }) => {
+  const { colors, getStatusColor } = useColors();
+
   return (
     <div className={`space-y-1 ${className}`}>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+      <label
+        htmlFor={id}
+        className="block text-sm font-medium"
+        style={{ color: colors.text }}
+      >
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && (
+          <span className="ml-1" style={{ color: getStatusColor('error') }}>
+            *
+          </span>
+        )}
       </label>
       <input
         type={type}
@@ -41,14 +52,27 @@ export const InputField: React.FC<InputFieldProps> = ({
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 ${
-          error ? 'border-red-500' : ''
-        }`}
+        className="w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 transition-all disabled:cursor-not-allowed"
+        style={
+          {
+            border: `1px solid ${
+              error ? getStatusColor('error') : colors.border
+            }`,
+            backgroundColor: disabled ? colors.cardBg : colors.surface,
+            color: colors.text,
+            '--tw-ring-color': colors.primary,
+          } as React.CSSProperties
+        }
         aria-invalid={error ? 'true' : 'false'}
         aria-describedby={error ? `${id}-error` : undefined}
       />
       {error && (
-        <p id={`${id}-error`} className="text-sm text-red-600" role="alert">
+        <p
+          id={`${id}-error`}
+          className="text-sm"
+          role="alert"
+          style={{ color: getStatusColor('error') }}
+        >
           {error}
         </p>
       )}

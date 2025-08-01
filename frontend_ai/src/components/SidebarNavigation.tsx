@@ -1,5 +1,6 @@
 'use client';
 
+import { useColors } from '@/hooks/useColors';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -100,6 +101,7 @@ interface SidebarNavigationProps {
 export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   children,
 }) => {
+  const { colors, getStatusColor } = useColors();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedModule, setExpandedModule] = useState<string | null>(null);
@@ -158,7 +160,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen" style={{ backgroundColor: colors.cardBg }}>
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
         <div
@@ -170,29 +172,37 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       {/* Sidebar */}
       <div
         className={`
-          fixed inset-y-0 left-0 z-50 bg-white shadow-lg transition-transform duration-300 lg:relative lg:translate-x-0
+          fixed inset-y-0 left-0 z-50 shadow-lg transition-transform duration-300 lg:relative lg:translate-x-0
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
           ${isCollapsed ? 'lg:w-16' : 'lg:w-64'}
           w-64
         `}
+        style={{ backgroundColor: colors.surface }}
       >
         {/* Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
+        <div
+          className="h-16 flex items-center justify-between px-4"
+          style={{ borderBottom: `1px solid ${colors.border}` }}
+        >
           {!isCollapsed && (
             <div className="flex items-center">
-              <h1 className="text-lg font-bold text-gray-900">🏥 EMR System</h1>
+              <h1 className="text-lg font-bold" style={{ color: colors.text }}>
+                🏥 EMR System
+              </h1>
             </div>
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden lg:block p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="hidden lg:block p-2 rounded-lg transition-colors hover:opacity-80"
+            style={{ backgroundColor: colors.cardBg }}
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? '→' : '←'}
           </button>
           <button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2 rounded-lg transition-colors hover:opacity-80"
+            style={{ backgroundColor: colors.cardBg }}
           >
             ✕
           </button>
@@ -208,14 +218,15 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                   <Link
                     href={module.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`
-                      group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors
-                      ${
-                        isModuleActive(module)
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                      }
-                    `}
+                    className="group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                    style={{
+                      backgroundColor: isModuleActive(module)
+                        ? colors.primary + '20'
+                        : 'transparent',
+                      color: isModuleActive(module)
+                        ? colors.primary
+                        : colors.text,
+                    }}
                     title={isCollapsed ? module.name : undefined}
                   >
                     <span className="text-xl mr-3 flex-shrink-0">
@@ -225,7 +236,13 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                       <>
                         <span className="flex-1">{module.name}</span>
                         {module.badge && (
-                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          <span
+                            className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                            style={{
+                              backgroundColor: getStatusColor('warning') + '20',
+                              color: getStatusColor('warning'),
+                            }}
+                          >
                             {module.badge}
                           </span>
                         )}
@@ -235,12 +252,24 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
                   {/* Tooltip for collapsed state */}
                   {isCollapsed && (
-                    <div className="absolute left-full top-0 ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                    <div
+                      className="absolute left-full top-0 ml-2 px-3 py-2 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50"
+                      style={{
+                        backgroundColor: colors.text,
+                        color: colors.surface,
+                      }}
+                    >
                       <div className="font-medium">{module.name}</div>
-                      <div className="text-xs text-gray-300">
+                      <div
+                        className="text-xs"
+                        style={{ color: colors.textMuted }}
+                      >
                         {module.description}
                       </div>
-                      <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
+                      <div
+                        className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 rotate-45"
+                        style={{ backgroundColor: colors.text }}
+                      ></div>
                     </div>
                   )}
                 </div>
@@ -251,16 +280,29 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
         {/* User Profile Section */}
         {!isCollapsed && (
-          <div className="border-t border-gray-200 p-4">
+          <div
+            className="p-4"
+            style={{ borderTop: `1px solid ${colors.border}` }}
+          >
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                  style={{ backgroundColor: colors.primary }}
+                >
                   DS
                 </div>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">Dr. Smith</p>
-                <p className="text-xs text-gray-500">Administrator</p>
+                <p
+                  className="text-sm font-medium"
+                  style={{ color: colors.text }}
+                >
+                  Dr. Smith
+                </p>
+                <p className="text-xs" style={{ color: colors.textSecondary }}>
+                  Administrator
+                </p>
               </div>
             </div>
           </div>
@@ -270,13 +312,20 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
         {/* Top Bar with Records Tabs */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header
+          className="shadow-sm"
+          style={{
+            backgroundColor: colors.surface,
+            borderBottom: `1px solid ${colors.border}`,
+          }}
+        >
           {/* Main Header Row */}
           <div className="h-16 flex items-center justify-between px-4 lg:px-6">
             <div className="flex items-center">
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors mr-3"
+                className="lg:hidden p-2 rounded-lg hover:opacity-80 transition-opacity mr-3"
+                style={{ backgroundColor: colors.cardBg }}
                 title="Open menu"
               >
                 <svg
@@ -284,6 +333,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  style={{ color: colors.text }}
                 >
                   <path
                     strokeLinecap="round"
@@ -293,7 +343,10 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                   />
                 </svg>
               </button>
-              <h2 className="text-lg lg:text-xl font-semibold text-gray-900">
+              <h2
+                className="text-lg lg:text-xl font-semibold"
+                style={{ color: colors.text }}
+              >
                 {getCurrentModuleName()}
               </h2>
 
@@ -301,7 +354,8 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
               {isRecordsPage() && (
                 <button
                   onClick={() => setMobileTabsOpen(!mobileTabsOpen)}
-                  className="sm:hidden ml-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="sm:hidden ml-4 p-2 rounded-lg hover:opacity-80 transition-opacity"
+                  style={{ backgroundColor: colors.cardBg }}
                   title="Toggle tabs"
                 >
                   <svg
@@ -309,6 +363,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    style={{ color: colors.text }}
                   >
                     <path
                       strokeLinecap="round"
@@ -322,18 +377,23 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             </div>
             <div className="flex items-center space-x-2 lg:space-x-4">
               <button
-                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="p-2 rounded-lg hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: colors.cardBg }}
                 title="Notifications"
               >
                 <span className="text-lg">🔔</span>
               </button>
               <button
-                className="hidden sm:block p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="hidden sm:block p-2 rounded-lg hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: colors.cardBg }}
                 title="Help"
               >
                 <span className="text-lg">❓</span>
               </button>
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium cursor-pointer">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium cursor-pointer"
+                style={{ backgroundColor: colors.primary }}
+              >
                 DS
               </div>
             </div>
@@ -341,7 +401,10 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
           {/* Records Tabs Row - Desktop */}
           {isRecordsPage() && (
-            <div className="hidden sm:block border-t border-gray-100">
+            <div
+              className="hidden sm:block"
+              style={{ borderTop: `1px solid ${colors.borderLight}` }}
+            >
               <div className="max-w-7xl mx-auto px-4 lg:px-6">
                 <nav className="-mb-px flex space-x-8" aria-label="Tabs">
                   {recordsTabs.map(tab => (
@@ -351,15 +414,43 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                       onClick={e => handleTabClick(tab.href, e)}
                       className={`${
                         isTabActive(tab.href)
-                          ? 'border-blue-500 text-blue-600'
-                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                      } group inline-flex items-center py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 relative`}
+                          ? `text-sm font-medium`
+                          : `text-sm font-medium transition-colors duration-200`
+                      } group inline-flex items-center py-3 px-1 border-b-2 relative`}
+                      style={{
+                        borderBottomColor: isTabActive(tab.href)
+                          ? colors.primary
+                          : 'transparent',
+                        color: isTabActive(tab.href)
+                          ? colors.primary
+                          : colors.textSecondary,
+                      }}
+                      onMouseEnter={e => {
+                        if (!isTabActive(tab.href)) {
+                          e.currentTarget.style.color = colors.text;
+                          e.currentTarget.style.borderBottomColor =
+                            colors.borderLight;
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (!isTabActive(tab.href)) {
+                          e.currentTarget.style.color = colors.textSecondary;
+                          e.currentTarget.style.borderBottomColor =
+                            'transparent';
+                        }
+                      }}
                     >
                       <span className="mr-2 text-base">{tab.icon}</span>
                       {tab.name}
                       {loadingTab === tab.href && (
                         <div className="ml-2">
-                          <div className="animate-spin rounded-full h-3 w-3 border border-blue-600 border-t-transparent"></div>
+                          <div
+                            className="animate-spin rounded-full h-3 w-3 border border-t-transparent"
+                            style={{
+                              borderColor: colors.primary,
+                              borderTopColor: 'transparent',
+                            }}
+                          ></div>
                         </div>
                       )}
                     </Link>
@@ -371,7 +462,13 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
           {/* Records Tabs Row - Mobile Dropdown */}
           {isRecordsPage() && mobileTabsOpen && (
-            <div className="sm:hidden border-t border-gray-100 bg-gray-50">
+            <div
+              className="sm:hidden border-t"
+              style={{
+                borderTopColor: colors.borderLight,
+                backgroundColor: colors.cardBg,
+              }}
+            >
               <div className="px-4 py-2 space-y-1">
                 {recordsTabs.map(tab => (
                   <Link
@@ -381,17 +478,43 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                       setMobileTabsOpen(false);
                       handleTabClick(tab.href, e);
                     }}
-                    className={`${
-                      isTabActive(tab.href)
-                        ? 'bg-blue-100 text-blue-700 border-blue-500'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    } group flex items-center px-3 py-2 text-sm font-medium rounded-md border-l-4 border-transparent transition-colors relative`}
+                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md border-l-4 transition-colors relative`}
+                    style={{
+                      backgroundColor: isTabActive(tab.href)
+                        ? colors.accent + '20'
+                        : 'transparent',
+                      color: isTabActive(tab.href)
+                        ? colors.primary
+                        : colors.textSecondary,
+                      borderLeftColor: isTabActive(tab.href)
+                        ? colors.primary
+                        : 'transparent',
+                    }}
+                    onMouseEnter={e => {
+                      if (!isTabActive(tab.href)) {
+                        e.currentTarget.style.backgroundColor =
+                          colors.accent + '10';
+                        e.currentTarget.style.color = colors.text;
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!isTabActive(tab.href)) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = colors.textSecondary;
+                      }
+                    }}
                   >
                     <span className="mr-3 text-base">{tab.icon}</span>
                     {tab.name}
                     {loadingTab === tab.href && (
                       <div className="ml-auto">
-                        <div className="animate-spin rounded-full h-3 w-3 border border-blue-600 border-t-transparent"></div>
+                        <div
+                          className="animate-spin rounded-full h-3 w-3 border border-t-transparent"
+                          style={{
+                            borderColor: colors.primary,
+                            borderTopColor: 'transparent',
+                          }}
+                        ></div>
                       </div>
                     )}
                   </Link>
@@ -402,7 +525,12 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto bg-gray-50">{children}</main>
+        <main
+          className="flex-1 overflow-auto"
+          style={{ backgroundColor: colors.background }}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

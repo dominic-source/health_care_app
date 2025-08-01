@@ -1,3 +1,4 @@
+import { useColors } from '@/hooks/useColors';
 import React from 'react';
 
 interface CheckboxFieldProps {
@@ -21,8 +22,10 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   error,
   required = false,
   disabled = false,
-  className = ''
+  className = '',
 }) => {
+  const { colors, getStatusColor } = useColors();
+
   return (
     <div className={`space-y-1 ${className}`}>
       <div className="flex items-start">
@@ -33,19 +36,34 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
           checked={checked}
           onChange={onChange}
           disabled={disabled}
-          className={`mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed ${
-            error ? 'border-red-500' : ''
-          }`}
+          className="mt-1 h-4 w-4 rounded focus:ring-2 disabled:cursor-not-allowed transition-all"
+          style={{
+            accentColor: colors.primary,
+            borderColor: error ? getStatusColor('error') : colors.border,
+          }}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={error ? `${id}-error` : undefined}
         />
-        <label htmlFor={id} className="ml-2 block text-sm text-gray-700">
+        <label
+          htmlFor={id}
+          className="ml-2 block text-sm"
+          style={{ color: colors.text }}
+        >
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && (
+            <span className="ml-1" style={{ color: getStatusColor('error') }}>
+              *
+            </span>
+          )}
         </label>
       </div>
       {error && (
-        <p id={`${id}-error`} className="text-sm text-red-600" role="alert">
+        <p
+          id={`${id}-error`}
+          className="text-sm"
+          role="alert"
+          style={{ color: getStatusColor('error') }}
+        >
           {error}
         </p>
       )}
