@@ -1,11 +1,14 @@
+import { initialFormData } from '@/constant';
+import { MedicalHistoryArrayKeys, PatientRegistration } from '@/types/patient';
+import {
+  formatPhoneNumber,
+  validatePatientRegistration,
+} from '@/utils/validation';
 import { useState } from 'react';
-import { PatientRegistration, MedicalHistoryArrayKeys } from '@/types/patient';
-import { validatePatientRegistration, formatPhoneNumber } from '@/utils/validation';
-import { initialFormData } from '@/appConstants';
-
 
 export const usePatientRegistration = () => {
-  const [formData, setFormData] = useState<PatientRegistration>(initialFormData);
+  const [formData, setFormData] =
+    useState<PatientRegistration>(initialFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,23 +19,31 @@ export const usePatientRegistration = () => {
 
   const totalSteps = 6;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value, type } = e.target;
-    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
+    const checked =
+      type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
 
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof PatientRegistration] as any,
-          [child]: type === 'checkbox' ? checked : value
-        }
+          ...(prev[parent as keyof PatientRegistration] as Record<
+            string,
+            unknown
+          >),
+          [child]: type === 'checkbox' ? checked : value,
+        },
       }));
     } else {
       setFormData(prev => ({
         ...prev,
-        [name]: type === 'checkbox' ? checked : value
+        [name]: type === 'checkbox' ? checked : value,
       }));
     }
 
@@ -45,28 +56,33 @@ export const usePatientRegistration = () => {
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const formattedPhone = formatPhoneNumber(value);
-    
+
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof PatientRegistration] as any,
-          [child]: formattedPhone
-        }
+          ...(prev[parent as keyof PatientRegistration] as Record<
+            string,
+            unknown
+          >),
+          [child]: formattedPhone,
+        },
       }));
     } else {
       setFormData(prev => ({
         ...prev,
-        [name]: formattedPhone
+        [name]: formattedPhone,
       }));
     }
   };
 
-  const addMedicalItem = (type: 'medications' | 'allergies' | 'conditions' | 'surgeries') => {
+  const addMedicalItem = (
+    type: 'medications' | 'allergies' | 'conditions' | 'surgeries'
+  ) => {
     let value = '';
     let setter: React.Dispatch<React.SetStateAction<string>>;
-    let key: MedicalHistoryArrayKeys
+    let key: MedicalHistoryArrayKeys;
 
     switch (type) {
       case 'medications':
@@ -96,8 +112,8 @@ export const usePatientRegistration = () => {
         ...prev,
         medicalHistory: {
           ...prev.medicalHistory,
-          [key]: [...prev.medicalHistory[key], value.trim()]
-        }
+          [key]: [...prev.medicalHistory[key], value.trim()],
+        },
       }));
       setter('');
     }
@@ -108,8 +124,8 @@ export const usePatientRegistration = () => {
       ...prev,
       medicalHistory: {
         ...prev.medicalHistory,
-        [type]: prev.medicalHistory[type].filter((_, i) => i !== index)
-      }
+        [type]: prev.medicalHistory[type].filter((_, i) => i !== index),
+      },
     }));
   };
 
@@ -141,10 +157,10 @@ export const usePatientRegistration = () => {
     try {
       // TODO: Submit to API
       console.log('Submitting patient registration:', formData);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       alert('Registration submitted successfully!');
     } catch (error) {
       console.error('Error submitting registration:', error);
@@ -165,7 +181,7 @@ export const usePatientRegistration = () => {
     conditionInput,
     surgeryInput,
     totalSteps,
-    
+
     // State Setters (for direct manipulation if needed)
     setFormData,
     setErrors,
@@ -175,7 +191,7 @@ export const usePatientRegistration = () => {
     setAllergyInput,
     setConditionInput,
     setSurgeryInput,
-    
+
     // Handlers
     handleInputChange,
     handlePhoneChange,
@@ -183,6 +199,6 @@ export const usePatientRegistration = () => {
     removeMedicalItem,
     nextStep,
     prevStep,
-    handleSubmit
+    handleSubmit,
   };
 };
